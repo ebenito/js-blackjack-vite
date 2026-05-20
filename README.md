@@ -10,3 +10,7 @@ Pasos para ejecutar proyecto:
 
 1. Ejecutar ```npm run build```
 2. Tomar la carpeta ```dist``` y desplegarla
+
+## Demo en Github Pages
+
+https://ebenito.github.io/js-blackjack-vite/
