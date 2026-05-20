@@ -23,3 +23,9 @@ html, body {
 #computadora-cartas, #jugador-cartas {
   height: 240px;
 }
+
+#resultado-texto {
+  color: #FFD700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  min-height: 2.5rem;
+}

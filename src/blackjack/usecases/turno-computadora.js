@@ -1,43 +1,46 @@
-import { pedirCarta, valorCarta, crearCartaHTML } from './';
+import { pedirCarta } from './pedir-carta';
+import { valorCarta } from './valor-carta';
 
 /**
- * turno de la computadora
+ * turno de la computadora (sin efectos de DOM)
  * @param {Number} puntosMinimos puntos minimos que la computadora necesita para ganar
- * @param {HTMLElement} puntosHTML elemento HTML para mostrar los puntos 
- * @param {HTMLElement} divCartasComputadora elemento HTML para mostrar las cartas 
  * @param {Array<String>} deck 
+ * @returns {{ puntosComputadora: number, cartasJugadas: string[], resultado: string }}
  */
-export const turnoComputadora = ( puntosMinimos, puntosHTML, divCartasComputadora, deck = [] ) => {
+export const turnoComputadora = ( puntosMinimos, deck = [] ) => {
 
     if ( !puntosMinimos ) throw new Error('Puntos mínimos son necesarios');
-    if ( !puntosHTML ) throw new Error('Argumento puntosHTML es necesario');
 
     let puntosComputadora = 0;
- 
+    let aces = 0;
+    const cartasJugadas = [];
+
     do {
         const carta = pedirCarta( deck );
+        cartasJugadas.push( carta );
 
-        puntosComputadora = puntosComputadora + valorCarta( carta );
-        puntosHTML.innerText = puntosComputadora;
-        
-        const imgCarta = crearCartaHTML( carta );
-        divCartasComputadora.append( imgCarta );
+        if ( carta.startsWith('A') ) aces++;
+        puntosComputadora += valorCarta( carta );
 
-        if( puntosMinimos > 21 ) {
-            break;
+        if ( puntosComputadora > 21 && aces > 0 ) {
+            puntosComputadora -= 10;
+            aces--;
         }
 
-    } while(  (puntosComputadora < puntosMinimos)  && (puntosMinimos <= 21 ) );
+        if ( puntosMinimos > 21 ) break;
 
-    setTimeout(() => {
-        if( puntosComputadora === puntosMinimos ) {
-            alert('Nadie gana :(');
-        } else if ( puntosMinimos > 21 ) {
-            alert('Computadora gana')
-        } else if( puntosComputadora > 21 ) {
-            alert('Jugador Gana');
-        } else {
-            alert('Computadora Gana')
-        }
-    }, 100 );
+    } while ( puntosComputadora < puntosMinimos && puntosMinimos <= 21 );
+
+    let resultado;
+    if ( puntosMinimos > 21 ) {
+        resultado = 'computadora-gana';
+    } else if ( puntosComputadora === puntosMinimos ) {
+        resultado = 'empate';
+    } else if ( puntosComputadora > 21 ) {
+        resultado = 'jugador-gana';
+    } else {
+        resultado = 'computadora-gana';
+    }
+
+    return { puntosComputadora, cartasJugadas, resultado };
 }
